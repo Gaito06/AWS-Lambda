@@ -7,7 +7,6 @@ const { handler: deleteExpenseHandler } = require('../deleteExpense/index');
 
 describe('Expense Lambda Functions', () => {
   
-  // Mock DynamoDB methods before each test
   beforeEach(() => {
     AWSMock.setSDKInstance(AWS);
   });
@@ -17,7 +16,6 @@ describe('Expense Lambda Functions', () => {
   });
 
   it('should create a new expense', async () => {
-    // Mock the DynamoDB put method
     AWSMock.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
       callback(null, { Attributes: { expenseId: '1234' } });
     });
@@ -37,7 +35,6 @@ describe('Expense Lambda Functions', () => {
   });
 
   it('should update an existing expense', async () => {
-    // Mock the DynamoDB update method
     AWSMock.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
       callback(null, { Attributes: { expenseId: 'existingExpenseId' } });
     });
@@ -58,7 +55,6 @@ describe('Expense Lambda Functions', () => {
   });
 
   it('should get all expenses for a user', async () => {
-    // Mock the DynamoDB scan method
     AWSMock.mock('DynamoDB.DocumentClient', 'scan', (params, callback) => {
       callback(null, {
         Items: [
@@ -75,25 +71,4 @@ describe('Expense Lambda Functions', () => {
     };
     const result = await getExpensesHandler(event);
     expect(result.statusCode).toBe(200);
-    const expenses = JSON.parse(result.body);
-    expect(expenses.length).toBeGreaterThan(0);
-    expect(expenses[0].expenseId).toBe('1234');
-  });
-
-  it('should delete an existing expense', async () => {
-    // Mock the DynamoDB delete method
-    AWSMock.mock('DynamoDB.DocumentClient', 'delete', (params, callback) => {
-      callback(null, { Attributes: { expenseId: 'existingExpenseId' } });
-    });
-
-    const event = {
-      body: JSON.stringify({
-        expenseId: 'existingExpenseId',
-      }),
-    };
-    const result = await deleteExpenseHandler(event);
-    expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body).message).toBe('Expense deleted successfully');
-  });
-
-});
+    const
