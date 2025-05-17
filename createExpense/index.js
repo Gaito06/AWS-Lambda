@@ -1,31 +1,34 @@
-const AWS = require("aws-sdk");
-const { v4: uuidv4 } = require("uuid");
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const { userId } = event.requestContext.authorizer.claims;
-  const { date, amount, category, description } = JSON.parse(event.body);
-  const expenseId = uuidv4();
+    const body = JSON.parse(event.body);
 
-  const params = {
-    TableName: "Expenses",
-    Item: {
-      userId,
-      expenseId,
-      date,
-      amount,
-      category,
-      description,
-    },
-  };
-
-  try {
-    await dynamoDb.put(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Expense added", expenseId }),
+    const expenseItem = {
+        userId: body.userId,
+        expenseId: uuidv4(),
+        amount: body.amount,
+        category: body.category,
+        description: body.description,
+        date: body.date
     };
-  } catch (err) {
-    return { statusCode: 500, body: JSON.stringify(err) };
-  }
+
+    const params = {
+        TableName: 'Expenses',
+        Item: expenseItem
+    };
+
+    try {
+        await dynamoDB.put(params).promise();
+        return {
+            statusCode: 201,
+            body: JSON.stringify(expenseItem)
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Failed to create expense" })
+        };
+    }
 };
