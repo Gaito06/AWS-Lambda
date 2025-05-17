@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <script>
+        const apiUrl = 'https://abcd1234.execute-api.us-east-1.amazonaws.com/dev/expenses'; // Replace with your actual API URL
+
+        // Create a new expense
+        function createExpense() {
+            const expenseData = {
+                userId: 'user123', // Example userId (this would be dynamic in a real app)
+                amount: document.getElementById('amount').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('date').value
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(expenseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Expense created:', data);
+                alert('Expense added successfully!');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Get expenses for a user
+        function getExpenses() {
+            fetch(`${apiUrl}?userId=user123`) // Replace with actual user ID
+            .then(response => response.json())
+            .then(data => {
+                const expensesList = document.getElementById('expensesList');
+                expensesList.innerHTML = ''; // Clear previous results
+                data.forEach(expense => {
+                    expensesList.innerHTML += `<li>${expense.description} - $${expense.amount} - ${expense.date}</li>`;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Expense Tracker</h1>
+
+    <div>
+        <h2>Add Expense</h2>
+        <label for="amount">Amount: </label><input type="number" id="amount"><br>
+        <label for="category">Category: </label><input type="text" id="category"><br>
+        <label for="description">Description: </label><input type="text" id="description"><br>
+        <label for="date">Date: </label><input type="date" id="date"><br><br>
+        <button onclick="createExpense()">Add Expense</button>
+    </div>
+
+    <div>
+        <h2>View Expenses</h2>
+        <button onclick="getExpenses()">Get Expenses</button>
+        <ul id="expensesList"></ul>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <script>
+        const apiUrl = 'https://abcd1234.execute-api.us-east-1.amazonaws.com/dev/expenses'; // Replace with your actual API URL
+
+        // Create a new expense
+        function createExpense() {
+            const expenseData = {
+                userId: 'user123', // Example userId (this would be dynamic in a real app)
+                amount: document.getElementById('amount').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('date').value
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(expenseData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Expense created:', data);
+                alert('Expense added successfully!');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Get expenses for a user
+        function getExpenses() {
+            fetch(`${apiUrl}?userId=user123`) // Replace with actual user ID
+            .then(response => response.json())
+            .then(data => {
+                const expensesList = document.getElementById('expensesList');
+                expensesList.innerHTML = ''; // Clear previous results
+                data.forEach(expense => {
+                    expensesList.innerHTML += `<li>${expense.description} - $${expense.amount} - ${expense.date}</li>`;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Expense Tracker</h1>
+
+    <div>
+        <h2>Add Expense</h2>
+        <label for="amount">Amount: </label><input type="number" id="amount"><br>
+        <label for="category">Category: </label><input type="text" id="category"><br>
+        <label for="description">Description: </label><input type="text" id="description"><br>
+        <label for="date">Date: </label><input type="date" id="date"><br><br>
+        <button onclick="createExpense()">Add Expense</button>
+    </div>
+
+    <div>
+        <h2>View Expenses</h2>
+        <button onclick="getExpenses()">Get Expenses</button>
+        <ul id="expensesList"></ul>
+    </div>
+</body>
+</html>
