@@ -1,24 +1,34 @@
-const AWS = require("aws-sdk");
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const AWS = require('aws-sdk');
+const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const { userId } = event.requestContext.authorizer.claims;
+    const { userId, expenseId } = event.pathParameters;
 
-  const params = {
-    TableName: "Expenses",
-    KeyConditionExpression: "userId = :uid",
-    ExpressionAttributeValues: {
-      ":uid": userId,
-    },
-  };
+    if (!userId || !expenseId) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "User ID and Expense ID are required" })
+        };
+    }
 
-  try {
-    const data = await dynamoDb.query(params).promise();
-    return {
-      statusCode: 200,
-      body: JSON.stringify(data.Items),
+    const params = {
+        TableName: 'Expenses',
+        Key: {
+            'userId': userId,
+            'expenseId': expenseId
+        }
     };
-  } catch (err) {
-    return { statusCode: 500, body: JSON.stringify(err) };
-  }
+
+    try {
+        await dynamoDB.delete(params).promise();
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Expense deleted successfully" })
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Failed to delete expense" })
+        };
+    }
 };
